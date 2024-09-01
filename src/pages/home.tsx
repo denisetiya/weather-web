@@ -1,11 +1,17 @@
 import request from "../components/getData";
 import { useState, useEffect } from "react";
-import locationLogo from "../assets/location.png";
 import noon from "../assets/clear.jpg";
-import rain from "../assets/rain.jpg";
+import rain from "../assets/rain.jpeg";
 import night from "../assets/night.jpg";
 import sunrise from "../assets/sunrise.jpg";
+import overcast from "../assets/overcast.jpg";
 import Current from "../components/current";
+import snow from "../assets/snow.jpg";
+import snow2 from "../assets/snow2.jpg";
+import fog from "../assets/fog.jpg";
+import cloud from "../assets/cloud.jpg";
+import thunder from "../assets/thunder.jpg";
+import { useAppContext } from '../utils/context'; 
 
 export interface IWeather {
 
@@ -58,11 +64,13 @@ export interface IWeather {
 function Home() {
 
 
-    
 
-    const [location, setLocation] = useState< string | null>(null);
+    const {code, setCode, day, setDay} = useAppContext();
+    const [location, setLocation] = useState<string | null>(null);
     const [bgSelected, setBgSelected] = useState<number>(1);
     const [data, setData] = useState<IWeather | null>(null);
+
+
 
     useEffect(() => {
         if (!navigator.geolocation) {
@@ -75,7 +83,7 @@ function Home() {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setLocation(latitude + ',' + longitude);
-                 
+
                 },
                 (err) => {
                     console.error(`Error: ${err.message}`);
@@ -100,8 +108,9 @@ function Home() {
             if (response) {
                 const weatherData: IWeather = response as IWeather;
                 setData(weatherData);
+                setCode(weatherData.current.condition.code);
+                setDay(weatherData.current.is_day);
             }
-            console.log('Weather data:', response);
         } catch (error) {
             console.error('Error fetching weather:', error);
         }
@@ -111,30 +120,73 @@ function Home() {
         if (location) {
             fetchWeather(location);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
 
     useEffect(() => {
         const updateBackground = () => {
-            const now = new Date();
-            const hours = now.getHours();
 
             if (data) {
-                const mainWeather = data.current.condition.text.toLowerCase();
 
-                if (mainWeather === 'rain' || mainWeather === 'drizzle' || mainWeather === 'thunderstorm') {
-                    setBgSelected(4); // Rainy background
-                } else if (hours >= 17 || hours < 6) {
-                    setBgSelected(2); // Night
-                } else if (hours >= 6 && hours < 7) {
-                    setBgSelected(3); // Sunrise
-                } else {
-                    setBgSelected(1); // Noon
-                }
+                if (code === 1009 || code === 1063 || code === 1072) {
+                    setBgSelected(5); // overcast background
+                } else if (code === 1066 || code === 1069) {
+                    setBgSelected(6); // snow background
+                } else if (code === 1114 || code === 1117 || code === 1198 || code === 1204 || code === 1207 ||
+                    code === 1066 || // Patchy snow possible
+                    code === 1069 || // Patchy sleet possible
+                    code === 1072 || // Patchy freezing drizzle possible
+                    code === 1168 || // Freezing drizzle
+                    code === 1171 || // Heavy freezing drizzle
+                    code === 1210 || // Patchy light snow
+                    code === 1213 || // Light snow
+                    code === 1216 || // Patchy moderate snow
+                    code === 1219 || // Moderate snow
+                    code === 1222 || // Patchy heavy snow
+                    code === 1225 || // Heavy snow
+                    code === 1237 || // Ice pellets
+                    code === 1255 || // Light snow showers
+                    code === 1258 || // Moderate or heavy snow showers
+                    code === 1261 || // Light showers of ice pellets
+                    code === 1264    // Moderate or heavy showers of ice pellets
+                ) {
+                    setBgSelected(7);
+                } else if (code === 1030 || code === 1135 ||
+                    code === 1147 // Freezing fog
+                ) {
+                    setBgSelected(8); // fog background
+                } else if (code === 1087 || // Thundery outbreaks possible
+                    code === 1273 || // Patchy light rain with thunder
+                    code === 1276 || // Moderate or heavy rain with thunder
+                    code === 1279 || // Patchy light snow with thunder
+                    code === 1282    // Moderate or heavy snow with thunder
+                   ) {
+               setBgSelected(10); // thunder background
+                } else if (code === 1180 || // Patchy light rain
+                    code === 1183 || // Light rain
+                    code === 1186 || // Moderate rain at times
+                    code === 1189 || // Moderate rain
+                    code === 1192 || // Heavy rain at times
+                    code === 1195 || // Heavy rain
+                    code === 1240 || // Light rain shower
+                    code === 1243 || // Moderate or heavy rain shower
+                    code === 1246    // Torrential rain shower
+                   ) {
+               setBgSelected(4); // rain background 
+           } else if (day === 0 && (code === 1000 || code == 1003 || code == 1006)) {
+               setBgSelected(2); // clear background
+           } else if (day === 1 && (code === 1000 || code == 1003 || code == 1006)) {
+               setBgSelected(1); // clear background
+           }
+           
+           
+
+
             }
         };
-
+  
         updateBackground();
-    }, [data]);
+    }, [data, code, day]);
 
     const backgroundImage = () => {
         switch (bgSelected) {
@@ -146,35 +198,38 @@ function Home() {
                 return sunrise;
             case 4:
                 return rain;
+            case 5:
+                return overcast;
+            case 6:
+                return snow;
+            case 7:
+                return snow2;
+            case 8:
+                return fog;
+            case 9:
+                return cloud;
+            case 10:
+                return thunder;
             default:
-                return noon;
+                return sunrise;
+
         }
     };
 
-    function getFormattedDate() {
-        const now = new Date();
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const dayName = daysOfWeek[now.getDay()];
-        const dayOfMonth = now.getDate();
-        const monthName = monthsOfYear[now.getMonth()];
-        const year = now.getFullYear();
-        return `${dayName} | ${dayOfMonth} ${monthName} ${year}`;
-    }
 
 
 
-    const temperatureInCelsius = data ? data.current.feelslike_c : null;
+
 
     return (
         <div
             style={{ backgroundImage: `url(${backgroundImage()})` }}
-            className="h-screen w-full bg-cover bg-center "
+            className="h-screen w-full bg-cover bg-center transition-all duration-700"
         >
             <div className="overlay absolute inset-0  bg-black opacity-30 "></div>
             <div className="flex justify-center items-center h-full flex-col mx-80">
                 <div className="w-full bg-white bg-opacity-30 border border-white border-opacity-20 p-8 rounded-3xl backdrop-blur-md bg-cover">
-                    <Current locationLogo={locationLogo} data={data} temperatureInCelsius={temperatureInCelsius} getFormattedDate={getFormattedDate} />
+                    <Current data={data} />
                 </div>
 
                 <div className="flex items-center w-full mt-5 gap-6">
