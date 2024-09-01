@@ -6,10 +6,6 @@ interface AppContextType {
   setCode: (value: number) => void;
   day : number
   setDay : (value: number) => void
-  lat: number
-  setLat: (value: number) => void
-  lon: number
-  setLon: (value: number) => void
 }
 
 
@@ -19,11 +15,9 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [code, setCode] = useState<number>(0);
   const [day, setDay] = useState<number>(0);
-  const [lat, setLat] = useState<number>(0);
-  const [lon, setLon] = useState<number>(0);
 
   return (
-    <AppContext.Provider value={{ code, setCode, day, setDay, lat, setLat, lon, setLon }}>
+    <AppContext.Provider value={{ code, setCode, day, setDay }}>
       {children}
     </AppContext.Provider>
   );

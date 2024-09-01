@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState , useRef} from 'react';
 import request from '../components/getData';
 import { IWeather } from '../pages/home';
 import { MapPin, ThermometerSimple, DropHalfBottom, Wind, ThermometerCold, ThermometerHot } from '@phosphor-icons/react';
@@ -10,13 +10,14 @@ interface CurrentProps {
 }
 
 const Current: React.FC<CurrentProps> = ({ data}) => {
-    const {setCode,setDay,setLat,setLon} = useAppContext();
+    const {setCode,setDay} = useAppContext();
     const [current, setCurrent] = useState<IWeather | null>(data);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [currentTemp, setCurrentTemp] = useState<number | null>(null);
     const [timeNow, setTimeNow] = useState<string | null>(null);
+    const timeoutRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (data) {
@@ -64,8 +65,7 @@ const Current: React.FC<CurrentProps> = ({ data}) => {
                 setCode(weatherData.current.condition.code);
                 setDay(weatherData.current.is_day);
                 setTimeNow(weatherData.location.localtime);
-                setLat(weatherData.location.lat);
-                setLon(weatherData.location.lon);
+
             }
 
         } catch (error) {
@@ -94,6 +94,26 @@ const Current: React.FC<CurrentProps> = ({ data}) => {
         }
     };
 
+    useEffect(() => {
+        // Clear the previous timeout if searchQuery changes
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+    
+        // Set a new timeout
+        timeoutRef.current = window.setTimeout(() => {
+          searchHandler(searchQuery);
+        }, 500);
+    
+        // Cleanup function to clear timeout on component unmount
+        return () => {
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+        };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [searchQuery]); // Depend on searchQuery
+
     return (
         <div className="text-white">
             <div className="flex justify-between items-center mb-4">
@@ -111,15 +131,12 @@ const Current: React.FC<CurrentProps> = ({ data}) => {
                     </div>
                 </div>
                 <div >
-                    <input
-                        type="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') searchHandler(searchQuery);
-                        }}
-                        className="text-xl bg-transparent border-b border-white focus:outline-none  placeholder:text-white transition-colors duration-300"
-                        placeholder="Search City... "
+                <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="text-xl bg-transparent border-b border-white focus:outline-none placeholder:text-white transition-colors duration-300"
+                    placeholder="Search City..."
                     />
                 </div>
 

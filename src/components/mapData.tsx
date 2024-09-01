@@ -78,7 +78,7 @@ const MapData: React.FC<MapDataProps> = ({ lon, lat }) => {
   };
 
   return (
-    <div className='w-full h-full rounded-3xl overflow-hidden relative bg-opacity-80'>
+    <div className='w-full h-full rounded-3xl overflow-hidden relative opacity-70'>
       <div className="fixed bottom-0 left-0 right-0 mx-auto w-3/5 bg-black text-white text-center py-4 z-10">
         <span className="text-xs font-semibold">{timeText}</span>
       </div>
