@@ -12,6 +12,7 @@ import fog from "../assets/fog.jpg";
 import cloud from "../assets/cloud.jpg";
 import thunder from "../assets/thunder.jpg";
 import { useAppContext } from '../utils/context'; 
+import MapData from "../components/mapData";
 
 export interface IWeather {
 
@@ -65,7 +66,7 @@ function Home() {
 
 
 
-    const {code, setCode, day, setDay} = useAppContext();
+    const {code, setCode, day, setDay, lat, setLat, lon, setLon} = useAppContext();
     const [location, setLocation] = useState<string | null>(null);
     const [bgSelected, setBgSelected] = useState<number>(1);
     const [data, setData] = useState<IWeather | null>(null);
@@ -110,6 +111,9 @@ function Home() {
                 setData(weatherData);
                 setCode(weatherData.current.condition.code);
                 setDay(weatherData.current.is_day);
+                setLat(weatherData.location.lat);
+                setLon(weatherData.location.lon);
+                
             }
         } catch (error) {
             console.error('Error fetching weather:', error);
@@ -235,10 +239,13 @@ function Home() {
                 <div className="flex items-center w-full mt-5 gap-6">
                     <div className="w-20 h-96 bg-white bg-opacity-30 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
                     <div className="flex flex-col  w-[85%] gap-5">
-                        <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
+                        <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md">
+                        </div>
                         <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
                     </div>
-                    <div className="w-80 h-96 bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
+                    <div className="w-80 h-96 bg-white bg-opacity-10 border border-white border-opacity-20  rounded-3xl backdrop-blur-md">
+                        <MapData lon={lon} lat={lat}/>
+                    </div>
                 </div>
             </div>
         </div>

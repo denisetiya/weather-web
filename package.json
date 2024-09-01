@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@maptiler/sdk": "^2.2.2",
+    "@maptiler/weather": "^2.1.0",
     "@phosphor-icons/react": "^2.1.7",
     "axios": "^1.7.5",
     "date-fns": "^3.6.0",
