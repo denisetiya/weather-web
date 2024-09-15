@@ -146,7 +146,7 @@ const Current: React.FC<CurrentProps> = ({ data }) => {
             <hr className="border-white mb-4" />
             <div className="text-5xl font-bold flex flex-col md:flex-row justify-between items-center">
                 <div className='flex'>
-                    <a className='block md:hidden' href="https://www.weatherapi.com/">
+                    <a className='block ' href="https://www.weatherapi.com/">
                         <img src={current?.current.condition.icon} />
                     </a>
                     <div className=''>
@@ -173,9 +173,6 @@ const Current: React.FC<CurrentProps> = ({ data }) => {
                             {thermologoHandler()}
                             {current ? current.current.feelslike_c : 'Loading...'}&deg;C
                         </p>
-                        <a className='hidden md:block' href="https://www.weatherapi.com/">
-                            <img src={current?.current.condition.icon} />
-                        </a>
 
                     </div>
                     <p className="text-center md:text-start text-xs md:text-sm mt-2">{formatedTime()}</p>
