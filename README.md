@@ -20,6 +20,11 @@ Built with **React** and **TypeScript** for reliability, **Vite** for fast devel
 ## 📸 Screenshots
 ![Weather App Screenshot](https://drive.google.com/uc?export=view&id=12ZzPbpwj81YaJeATwhrQd3o-ujrLTfr1)
 
+## 🌐 Live Preview
+
+Check out the live preview of the weather app here: [Weather Watcher](https://weather-web-two-alpha.vercel.app/)
+
+
 
 ## 🛠️ Tech Stack
 
