@@ -186,4 +186,4 @@ interface IWeather {
     };
 }
 
-export type { IForecastData, IWeather }
+export type { IForecastData, IWeather, Hour }

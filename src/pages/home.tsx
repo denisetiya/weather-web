@@ -187,18 +187,18 @@ function Home() {
             className="h-screen w-full bg-cover bg-center transition-all duration-700"
         >
             <div className="overlay absolute inset-0  bg-black opacity-30 "></div>
-            <div className="flex justify-center items-center h-full flex-col mx-80">
+            <div className="flex justify-center items-center h-full flex-col xl:mx-52 2xl:mx-80 ">
                 <div className="w-full bg-white bg-opacity-30 border border-white border-opacity-20 p-8 rounded-3xl backdrop-blur-md bg-cover">
                     <Current data={data} />
                 </div>
 
                 <div className="flex items-center w-full mt-5 gap-6">
-                    <div className="flex flex-col  w-[85%] gap-5">
+                    <div className="flex flex-col w-full lg:w-[85%] gap-5">
                         <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md">
                             <Forecast />
                         </div>
                     </div>
-                    <div className="w-80 h-96 bg-white bg-opacity-10 border border-white border-opacity-20  rounded-3xl backdrop-blur-md">
+                    <div className="hidden lg:block w-80 h-96 bg-white bg-opacity-10 border border-white border-opacity-20  rounded-3xl backdrop-blur-md">
                         <MapData lon={data ? data?.location.lon : 0} lat={data ? data?.location.lat : 0}/>
                     </div>
                 </div>
