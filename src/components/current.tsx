@@ -1,6 +1,6 @@
 import { useEffect, useState , useRef} from 'react';
-import request from '../components/getData';
-import { IWeather } from '../pages/home';
+import request from '../utils/getData';
+import { IWeather } from '../utils/Interface';
 import { MapPin, ThermometerSimple, DropHalfBottom, Wind, ThermometerCold, ThermometerHot } from '@phosphor-icons/react';
 import { useAppContext } from '../utils/context';
 import { format, parse } from 'date-fns';
@@ -10,7 +10,7 @@ interface CurrentProps {
 }
 
 const Current: React.FC<CurrentProps> = ({ data}) => {
-    const {setCode,setDay} = useAppContext();
+    const {setCode,setDay,setLat,setLon} = useAppContext();
     const [current, setCurrent] = useState<IWeather | null>(data);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -65,7 +65,8 @@ const Current: React.FC<CurrentProps> = ({ data}) => {
                 setCode(weatherData.current.condition.code);
                 setDay(weatherData.current.is_day);
                 setTimeNow(weatherData.location.localtime);
-
+                setLat(weatherData.location.lat);
+                setLon(weatherData.location.lon);
             }
 
         } catch (error) {

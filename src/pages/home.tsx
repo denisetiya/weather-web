@@ -1,4 +1,4 @@
-import request from "../components/getData";
+import request from "../utils/getData";
 import { useState, useEffect } from "react";
 import noon from "../assets/clear.jpg";
 import rain from "../assets/rain.jpeg";
@@ -13,60 +13,15 @@ import cloud from "../assets/cloud.jpg";
 import thunder from "../assets/thunder.jpg";
 import { useAppContext } from '../utils/context'; 
 import MapData from "../components/mapData";
+import { IWeather } from "../utils/Interface";
+import Forecast from "../components/Forecast";
 
-export interface IWeather {
 
-    location: {
-        name: string;
-        region: string;
-        country: string;
-        lat: number;
-        lon: number;
-        tz_id: string;
-        localtime_epoch: number;
-        localtime: string;
-    };
-    current: {
-        last_updated_epoch: number;
-        last_updated: string;
-        temp_c: number;
-        temp_f: number;
-        is_day: number;
-        condition: {
-            text: string;
-            icon: string;
-            code: number;
-        };
-        wind_mph: number;
-        wind_kph: number;
-        wind_degree: number;
-        wind_dir: string;
-        pressure_mb: number;
-        pressure_in: number;
-        precip_mm: number;
-        precip_in: number;
-        humidity: number;
-        cloud: number;
-        feelslike_c: number;
-        feelslike_f: number;
-        windchill_c: number;
-        windchill_f: number;
-        heatindex_c: number;
-        heatindex_f: number;
-        dewpoint_c: number;
-        dewpoint_f: number;
-        vis_km: number;
-        vis_miles: number;
-        uv: number;
-        gust_mph: number;
-        gust_kph: number;
-    };
-}
 function Home() {
 
 
 
-    const {code, setCode, day, setDay} = useAppContext();
+    const {code, setCode, day, setDay,setLat,setLon} = useAppContext();
     const [location, setLocation] = useState<string | null>(null);
     const [bgSelected, setBgSelected] = useState<number>(1);
     const [data, setData] = useState<IWeather | null>(null);
@@ -84,6 +39,8 @@ function Home() {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setLocation(latitude + ',' + longitude);
+                    setLat(latitude);
+                    setLon(longitude);
 
                 },
                 (err) => {
@@ -94,6 +51,7 @@ function Home() {
         };
 
         fetchLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchWeather = async (query: string) => {
@@ -235,11 +193,10 @@ function Home() {
                 </div>
 
                 <div className="flex items-center w-full mt-5 gap-6">
-                    <div className="w-20 h-96 bg-white bg-opacity-30 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
                     <div className="flex flex-col  w-[85%] gap-5">
                         <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md">
+                            <Forecast />
                         </div>
-                        <div className="w-full bg-white bg-opacity-10 border border-white border-opacity-20 p-8 rounded-2xl backdrop-blur-md"></div>
                     </div>
                     <div className="w-80 h-96 bg-white bg-opacity-10 border border-white border-opacity-20  rounded-3xl backdrop-blur-md">
                         <MapData lon={data ? data?.location.lon : 0} lat={data ? data?.location.lat : 0}/>
